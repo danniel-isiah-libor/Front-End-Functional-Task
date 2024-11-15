@@ -6,38 +6,108 @@ A Laravel and Quasar Project
 
 ### Backend
 
-```bash
-cd backend
+1. Navigate to the backend directory:
 
-cp .env.example .env
+   ```bash
+   cd backend
+   ```
 
-composer install
+2. Copy the example environment file and configure it:
 
-php artisan key:generate
+   ```bash
+   cp .env.example .env
+   ```
 
-php artisan migrate
+3. Build the Docker image:
 
-php artisan serve
-```
+   ```bash
+   make build
+   ```
+
+4. Start the Docker containers:
+
+   ```bash
+   make up
+   ```
+
+5. Access the running container:
+
+   ```bash
+   make shell
+   ```
+
+6. Install PHP dependencies:
+
+   ```bash
+   composer install
+   ```
+
+7. Generate the application key:
+
+   ```bash
+   php artisan key:generate
+   ```
+
+8. Run database migrations:
+   ```bash
+   php artisan migrate
+   ```
 
 ### Frontend
 
-```bash
-cd frontend
+1. Navigate to the frontend directory:
 
-cp .env.example .env.local
+   ```bash
+   cd frontend
+   ```
 
-npm install
+2. Copy the example environment file and configure it:
 
-npm run dev
-```
+   ```bash
+   cp .env.example .env.local
+   ```
 
-To generate token:
+3. Build the Docker image:
 
-```bash
-cd backend
+   ```bash
+   make build
+   ```
 
-php artisan token:generate
-```
+4. Start the Docker containers:
 
-Copy and paste the token to `.env.local` file inside `frontend` folder
+   ```bash
+   make up
+   ```
+
+5. Access the running container:
+
+   ```bash
+   make shell
+   ```
+
+6. Install Node.js dependencies:
+   ```bash
+   npm install
+   ```
+
+## Generate Token
+
+1. Navigate to the backend directory:
+
+   ```bash
+   cd backend
+   ```
+
+2. Access the running container:
+
+   ```bash
+   make shell
+   ```
+
+3. Generate the token:
+
+   ```bash
+   php artisan token:generate
+   ```
+
+4. Copy and paste the token into the `.env.local` file inside the `frontend` folder.
