@@ -17,7 +17,7 @@ class ProductController extends Controller
     {
         $products = Product::getAll();
 
-        $products = collect($products['data'])->where('supplierId', $id)->toArray();
+        $products = collect($products['data'])->where('supplierId', $id)->values()->all();
 
         if ($request->get('search')) {
             $products = collect($products)->map(function ($product) use ($request) {
@@ -25,7 +25,7 @@ class ProductController extends Controller
 
                 $filteredChildProducts = collect($product['childProducts'])->filter(function ($childProduct) use ($searchTerm) {
                     return Str::contains(Str::lower($childProduct['name']), $searchTerm);
-                })->toArray();
+                })->values()->all();
 
                 $product['childProducts'] = $filteredChildProducts;
 
@@ -38,7 +38,7 @@ class ProductController extends Controller
                 $childProductMatches = !empty($product['childProducts']);
 
                 return $productMatches || $childProductMatches;
-            })->toArray();
+            })->values()->all();
         }
 
         return response()->json($products, 200);

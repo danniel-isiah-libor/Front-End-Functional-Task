@@ -20,7 +20,7 @@ class SupplierController extends Controller
         if ($request->get('search')) {
             $suppliers = collect($suppliers)->filter(function ($supplier) use ($request) {
                 return Str::contains(Str::lower($supplier['name']), Str::lower($request->get('search')));
-            })->toArray();
+            })->values()->all();
         }
 
         return response()->json($suppliers, 200);

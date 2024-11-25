@@ -75,8 +75,11 @@
           padding-bottom: 0px;
         "
       >
-        <q-list separator>
-          <template v-if="!selectedSupplier?.id">
+        <q-list
+          separator
+          v-if="!loading"
+        >
+          <template v-if="view === 'suppliers'">
             <SupplierList
               :items="items"
               :selectedSupplier="selectedSupplier"
@@ -84,14 +87,14 @@
             />
           </template>
 
-          <template v-else-if="!showSelection">
+          <template v-else-if="view === 'products'">
             <ProductList
               :items="items"
               :toggleCheckbox="toggleCheckbox"
             />
           </template>
 
-          <template v-else>
+          <template v-else-if="view === 'selections'">
             <SelectionList
               :selectedProducts="selectedProducts"
               :onDelete="onDelete"
@@ -182,6 +185,7 @@
       const selectedProducts = ref([])
       const showSelection = ref(false)
       const cart = ref([])
+      const view = ref('suppliers')
 
       const transformedItems = computed(() => {
         return items.value.map((item) => ({
@@ -191,6 +195,7 @@
       })
 
       const selectSupplier = async (supplier) => {
+        view.value = 'products'
         selectedSupplier.value = supplier
         search.value = ''
         await searchProducts()
@@ -227,10 +232,17 @@
       }
 
       const back = () => {
-        if (!showSelection.value) {
-          searchSuppliers()
-        } else {
-          title.value = selectedSupplier.value.name
+        switch (view.value) {
+          case 'products':
+            view.value = 'suppliers'
+            title.value = 'Browse'
+            searchSuppliers()
+            break
+
+          case 'selections':
+            view.value = 'products'
+            title.value = selectedSupplier.value.name
+            break
         }
         showSelection.value = false
       }
@@ -253,6 +265,7 @@
       }
 
       const showSelectedProducts = () => {
+        view.value = 'selections'
         title.value = 'Selection'
         showSelection.value = true
       }
@@ -373,6 +386,7 @@
         showSelection,
         cart,
         transformedItems,
+        view,
         selectSupplier,
         searchSuppliers,
         searchProducts,
