@@ -25,6 +25,9 @@
       const modal = ref(false)
       const productDialog = ref(null)
 
+      /**
+       * Get selected products from the dialog
+       */
       const getSelectedProducts = () => {
         return productDialog.value?.cart ?? []
       }

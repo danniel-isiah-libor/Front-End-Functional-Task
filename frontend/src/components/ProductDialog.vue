@@ -187,13 +187,10 @@
       const cart = ref([])
       const view = ref('suppliers')
 
-      const transformedItems = computed(() => {
-        return items.value.map((item) => ({
-          ...item,
-          displayName: `${item.name} (${item.id})`,
-        }))
-      })
-
+      /**
+       * Select a supplier
+       * @param {Object} supplier
+       */
       const selectSupplier = async (supplier) => {
         view.value = 'products'
         selectedSupplier.value = supplier
@@ -201,6 +198,9 @@
         await searchProducts()
       }
 
+      /**
+       * Search suppliers
+       */
       const searchSuppliers = async () => {
         loading.value = true
         await Supplier.search({ search: search.value })
@@ -212,6 +212,9 @@
           })
       }
 
+      /**
+       * Search products
+       */
       const searchProducts = async () => {
         loading.value = true
         await Product.show(selectedSupplier.value.id, { search: search.value })
@@ -231,6 +234,9 @@
           })
       }
 
+      /**
+       * Go back to the previous view
+       */
       const back = () => {
         switch (view.value) {
           case 'products':
@@ -247,6 +253,11 @@
         showSelection.value = false
       }
 
+      /**
+       * Toggle the checkbox of a product
+       * @param {Object} item
+       * @param {Object} product
+       */
       const toggleCheckbox = (item, product) => {
         items.value = items.value.map((v) => {
           if (v.id === item.id) {
@@ -264,12 +275,18 @@
         })
       }
 
+      /**
+       * Show selected products
+       */
       const showSelectedProducts = () => {
         view.value = 'selections'
         title.value = 'Selection'
         showSelection.value = true
       }
 
+      /**
+       * Add selected products to the cart
+       */
       const addProducts = async () => {
         cart.value = [...cart.value, ...selectedProducts.value]
         selectedSupplier.value = {}
@@ -277,6 +294,9 @@
         close()
       }
 
+      /**
+       * Show a notification
+       */
       const showNotif = () => {
         let names = selectedProducts.value.map((v) => v.product.name)
         if (names.length > 2) {
@@ -294,17 +314,26 @@
         })
       }
 
+      /**
+       * Close the dialog
+       */
       const close = () => {
         clear()
         modal.value = false
         emit('update:modelValue', false)
       }
 
+      /**
+       * Cancel the dialog
+       */
       const cancel = () => {
         modal.value = false
         emit('update:modelValue', false)
       }
 
+      /**
+       * Clear all refs
+       */
       const clear = () => {
         selectedProducts.value = []
         items.value = []
@@ -312,8 +341,14 @@
         title.value = 'Browse'
         loading.value = false
         showSelection.value = false
+        view.value = 'suppliers'
+        title.value = 'Browse'
       }
 
+      /**
+       * Delete a product from the selectedProducts ref
+       * @param {Object} product
+       */
       const onDelete = (product) => {
         const index = selectedProducts.value.findIndex(
           (p) => p.product.id === product.product.id
@@ -328,10 +363,16 @@
         }
       }
 
+      /**
+       * Watch for changes in the selectedSupplier ref
+       */
       watch(selectedSupplier, (val) => {
         title.value = val?.id ? val.name : 'Browse'
       })
 
+      /**
+       * Watch for changes in the search ref
+       */
       watch(
         search,
         _.debounce(() => {
@@ -343,12 +384,18 @@
         }, 500)
       )
 
+      /**
+       * Watch for changes in the modal ref
+       */
       watch(modal, (val) => {
         if (val && !items.value.length) {
           searchSuppliers()
         }
       })
 
+      /**
+       * Watch for changes in the items ref
+       */
       watch(
         items,
         (newVal) => {
@@ -367,6 +414,9 @@
         { deep: true }
       )
 
+      /**
+       * Watch for changes in the modelValue prop
+       */
       watch(
         () => props.modelValue,
         (newVal) => {
@@ -385,7 +435,6 @@
         selectedProducts,
         showSelection,
         cart,
-        transformedItems,
         view,
         selectSupplier,
         searchSuppliers,
